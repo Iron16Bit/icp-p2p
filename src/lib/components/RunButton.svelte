@@ -515,6 +515,16 @@ ${code}
     z-index: 10;
   }
 
+  @media screen and (max-width: 992px) {
+    #play-container {
+      width: min(4vw, 8vh);
+      height: min(4vw, 8vh);
+      position: absolute;
+      z-index: 10;
+    }
+  }
+
+
   #run-button {
     width: 100%;
     height: 100%;

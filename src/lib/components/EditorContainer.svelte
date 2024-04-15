@@ -293,12 +293,29 @@
         font-size: min(1.1vw, 2.2vh);
         white-space: pre-wrap;
     }
+    @media screen and (max-width: 992px) {
+        .output-text {
+            color: var(--output-text-color);
+            padding: min(0.05vw, 0.1vh) 0 0 min(0.6vw, 1.2vh);
+            margin: 0;
+            font-family: monospace;
+            font-size: min(1.8vw, 4vh);
+            white-space: pre-wrap;
+        }
+    }
 
     /* Code Mirror editor customization */
     .cm-editor {
         height: 100%;
         font-size: min(1.1vw, 2.2vh);
     }
+    @media screen and (max-width: 992px) {
+        .cm-editor {
+            height: 100%;
+            font-size: min(1.8vw, 4vh);
+        }
+    }
+    
 
     .cm-scroller {
         overflow: auto;

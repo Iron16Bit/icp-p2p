@@ -241,6 +241,9 @@
     }
 
     .menu-item,
+
+
+
     .settings-button {
         cursor: pointer;
         background: #5f5f5f;
@@ -254,6 +257,33 @@
         align-items: center;
         justify-content: center;
     }
+
+    @media screen and (max-width: 992px) {
+        .settings-button {
+            cursor: pointer;
+            background: #5f5f5f;
+            border-radius: 100%;
+            width: min(3.7vw, 7.4vh);
+            height: min(3.7vw, 7.4vh);
+            margin-left: max(-3.7vw, -7.4vh);
+            margin-top: max(-4vw, -8vh);
+            position: absolute;
+            transition: all ease-in-out 200ms;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    @media screen and (max-width: 992px) {
+        .menu-item {
+            width: min(3.7vw, 7.4vh);
+            height: min(3.7vw, 7.4vh);
+            margin-left: max(-3.7vw, -7.4vh);
+            margin-top: max(-4vw, -8vh);
+        }
+    }
+
     .menu-open {
         display: none;
     }
@@ -291,17 +321,41 @@
         transition-duration: 160ms;
         transform: translate3d(max(-2.5vw, -5vh), 0, 0);
     }
+    @media screen and (max-width: 992px) {
+        .menu-open:checked ~ .menu-item:nth-child(3) {
+            transition-duration: 160ms;
+            transform: translate3d(max(-5vw, -10vh), 0, 0);
+        }
+    }
     .menu-open:checked ~ .menu-item:nth-child(4) {
         transition-duration: 240ms;
         transform: translate3d(max(-2.5vw, -5vh), max(-2.5vw, -5vh), 0);
+    }
+    @media screen and (max-width: 992px) {
+        .menu-open:checked ~ .menu-item:nth-child(4) {
+            transition-duration: 240ms;
+            transform: translate3d(max(-5vw, -10vh), max(-5vw, -10vh), 0);
+        }
     }
     .menu-open:checked ~ .menu-item:nth-child(5) {
         transition-duration: 320ms;
         transform: translate3d(0, max(-2.5vw, -5vh), 0);
     }
+    @media screen and (max-width: 992px) {
+        .menu-open:checked ~ .menu-item:nth-child(5) {
+            transition-duration: 320ms;
+            transform: translate3d(0, max(-5vw, -10vh), 0);
+        }
+    }
     .menu-open:checked ~ .menu-item:nth-child(6) {
         transition-duration: 400ms;
         transform: translate3d(0, max(-5vw, -10vh), 0);
+    }
+    @media screen and (max-width: 992px) {
+        .menu-open:checked ~ .menu-item:nth-child(6) {
+            transition-duration: 400ms;
+            transform: translate3d(0, max(-10vw, -20vh), 0);
+        }
     }
 
     /* Lock icon CSS */

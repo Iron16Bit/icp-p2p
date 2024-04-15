@@ -43,9 +43,11 @@
 
 <button
   bind:this={rootElement}
+  class="themeSwitchButton"
   on:click={() => {
     setTheme(theme == "light" ? true : false);
   }}
+  
   style="position: absolute; right: {type == 'vertical'
     ? `calc(var(--output-height) + min(0.5vw, 1vh))`
     : `min(0.5vw, 1vh)`}; top: min(2.5vw, 5vh); padding: min(0.25vw, 0.5vh); width: min(1.7vw, 3.4vh); height: min(1.7vw, 3.4vh); border: 0px; border-radius: .4em; display: flex; justify-content: center; align-items: center; z-index: 99; background-color: var(--theme-color); cursor: pointer;"
@@ -84,3 +86,14 @@
     </svg>
   {/if}
 </button>
+
+<!-- //TODO: might be wrong -->
+<style>
+  @media screen and (max-width: 992px) {
+    .themeSwitchButton {
+      padding: min(0.5vw, 1vh); 
+      width: min(3.4vw, 6.8vh); 
+      height: min(3.4vw, 6.8vh);
+    }
+  }
+</style>
