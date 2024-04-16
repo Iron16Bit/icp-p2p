@@ -299,7 +299,7 @@
             padding: min(0.05vw, 0.1vh) 0 0 min(0.6vw, 1.2vh);
             margin: 0;
             font-family: monospace;
-            font-size: min(1.8vw, 4vh);
+            font-size: min(1.65vw, 3.3vh);
             white-space: pre-wrap;
         }
     }
@@ -312,7 +312,7 @@
     @media screen and (max-width: 992px) {
         .cm-editor {
             height: 100%;
-            font-size: min(1.8vw, 4vh);
+            font-size: min(1.65vw, 3.3vh);
         }
     }
     
@@ -366,6 +366,14 @@
         margin: min(0.7vw, 1.4vh);
         border-collapse: collapse;
     }
+
+    @media screen and (max-width: 992px) {
+        table {
+            margin: min(0.49vw, 0.98vh);
+            border-collapse: collapse;
+        }
+    }
+
     td,
     th {
         border: 1px solid var(--table-th-color);
