@@ -148,6 +148,12 @@
   document.addEventListener("fullscreenchange", (event) => {
     isFullscreen = document.fullscreenElement != null;
   });
+
+  var checkWidth = window.matchMedia("(max-width: 992px)")
+  let mobile = false;
+  if (checkWidth.matches) {
+    mobile = true;
+  }
 </script>
 
 <!-- Editor's HTML -->
@@ -174,7 +180,49 @@
   {/if}
 
   <!-- Button allowing the user to toggle fullscreen -->
-  <button
+  {#if mobile}
+    <button
+    on:click={() => {
+      if (isFullscreen) {
+        document.exitFullscreen();
+      } else if (rootElement && rootElement.requestFullscreen) {
+        rootElement.requestFullscreen();
+      }
+    }}
+    style="position: absolute; right: {type == 'vertical'
+      ? `calc(var(--output-height) + min(0.5vw, 1vh))`
+      : `min(0.5vw, 1vh)`}; top: min(0.5vw, 1vh); width: min(3vw, 6vh); height: min(3vw, 6vh); border: 0px; border-radius: .4em; display: flex; justify-content: center; align-items: center; z-index: 99; background-color: transparent; cursor: pointer;"
+  >
+    {#if isFullscreen}
+      <svg
+        style="height: 100%;"
+        fill={theme == "dark" ? "white" : "black"}
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M5 8h3V5h2v5H5V8Zm3 8H5v-2h5v5H8v-3Zm6 3h2v-3h3v-2h-5v5Zm2-14v3h3v2h-5V5h2Z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    {:else}
+      <svg
+        style="height: 100%;"
+        fill={theme == "dark" ? "white" : "black"}
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7 10H5V5h5v2H7v3Zm-2 4h2v3h3v2H5v-5Zm12 3h-3v2h5v-5h-2v3ZM14 7V5h5v5h-2V7h-3Z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    {/if}
+  </button>
+  {:else}
+    <button
     on:click={() => {
       if (isFullscreen) {
         document.exitFullscreen();
@@ -214,6 +262,7 @@
       </svg>
     {/if}
   </button>
+  {/if}
 
   <!-- Settings Button: copy, reset, allow tabs -->
   <settings-button
