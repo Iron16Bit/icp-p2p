@@ -30,7 +30,7 @@
     "prepare-cpp": "gulp prepareCpp",
     "prepare-python": "gulp preparePython",
     "prepare-java": "gulp prepareJava",
-    "build-all": "gulp prepareCpp; gulp preparePython; gulp prepareJava; gulp --language full; gulp --language java; gulp --language cpp; gulp --language standard-ml; gulp --language javascript; gulp --language p5-and-processing; gulp --language typescript; gulp --language python; gulp --language sql; gulp --language java-offline; gulp --language python-offline; gulp --language cpp-offline; gulp --language full-offline",
+    "build-all": "gulp prepareCpp && gulp preparePython && gulp prepareJava && gulp --language full && gulp --language java && gulp --language cpp && gulp --language standard-ml && gulp --language javascript && gulp --language p5-and-processing && gulp --language typescript && gulp --language python && gulp --language sql && gulp --language java-offline && gulp --language python-offline && gulp --language cpp-offline && gulp --language full-offline",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "github-cdn": "npx gh-pages -d dist"

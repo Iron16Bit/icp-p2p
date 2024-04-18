@@ -23,12 +23,12 @@ Run a demo:
 npm run dev
 ```
 
+**Note**: In Windows, the following codes must be executed in Bash and not Powershell (e.g in a GIT Bash)
+
 Build the entire module:
 ```
 npm run build-all
 ```
-
-**Note**: In Windows, the following code must be executed in Bash and not Powershell (e.g in a GIT Bash)
 
 Build for a specific language;
 ```
@@ -40,6 +40,8 @@ npm run build -- --language python
 ```
 npm run prepare-[cpp/python/java]
 ```
+
+Each language built is zipped inside the `export-languages.zip` file, which can be copied and distribted for use in the [mobile app](https://github.com/Iron16Bit/icp-app).
 
 The build-all command will generate a `dist/base` folder with the following files:
 - `*.iife.js`: script to be included inside the HTML page using ICP; to reduce the size of the bundle to be downloaded, please use the file corresponding to the language you want to use;
