@@ -28,6 +28,8 @@ Build the entire module:
 npm run build-all
 ```
 
+**Note**: In Windows, the following code must be executed in Bash and not Powershell (e.g in a GIT Bash)
+
 Build for a specific language;
 ```
 npm run build -- --language python
