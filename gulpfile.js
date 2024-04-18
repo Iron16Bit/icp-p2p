@@ -60,298 +60,92 @@ export default (cb) => {
 
         console.log("Build completed!");
 
-        if (language == "javascript") {
+        if (language == "javascript" || language == "typescript" || language == "sql" || language == "p5" || language == "processing" || language == "standard-ml" || language == "cpp" || language == "java" || language == "python") {
             try {
-                fs.stat("./dist/base/languages.zip", function(err, stat) {
+                fs.stat("./dist/base/export_languages.zip", function(err, stat) {
                     if (err == null) {
-                        var zip = new AdmZip("./dist/base/languages.zip");
+                        var zip = new AdmZip("./dist/base/export_languages.zip");
 
                         zip.extractAllTo("./dist/base/tmp", true);
-                        fs.copyFile("./dist/base/javascript.iife.js", "./dist/base/tmp/javascript.iife.js", (err) => {
+                        fs.copyFile("./dist/base/" + language + ".iife.js", "./dist/base/tmp/" + language + ".iife.js", (err) => {
                             if (err) throw err;
                         });
 
                         zip.addLocalFolder("./dist/base/tmp");
-                        zip.writeZip("./dist/base/languages.zip");
+                        zip.writeZip("./dist/base/export_languages.zip");
                         fs.rmSync("./dist/base/tmp", { recursive: true, force: true });
 
                     } else if (err.code === 'ENOENT') {
                         // file does not exist
                         var zip = new AdmZip();
-                        zip.addLocalFile("./dist/base/javascript.iife.js");
-                        zip.writeZip("./dist/base/languages.zip");
+                        zip.addLocalFile("./dist/base/" + language + ".iife.js");
+                        zip.writeZip("./dist/base/export_languages.zip");
                     } else {
                         console.log('Some other error: ', err.code);
                     }
                 });
 
-                console.log("Zip file languages.zip created!")
+                console.log("Zip file export_languages.zip created!")
             } catch (e) {
                 console.log(`Error creating zip file. ${e}`);
             }
-        } else if (language == "typescript") {
+        } else if (language == "cpp-offline" || language == "java-offline" || language == "python-offline") {
+            var short_name;
+            if (language == "cpp-offline") {
+                short_name = "cpp";
+            } else if (language == "java-offline") {
+                short_name = "java";
+            } else {
+                short_name = "python";
+            };
+
             try {
-                fs.stat("./dist/base/languages.zip", function(err, stat) {
+                fs.stat("./dist/base/export_languages.zip", function(err, stat) {
                     if (err == null) {
-                        var zip = new AdmZip("./dist/base/languages.zip");
+                        var zip = new AdmZip("./dist/base/export_languages.zip");
 
                         zip.extractAllTo("./dist/base/tmp", true);
-                        fs.copyFile("./dist/base/typescript.iife.js", "./dist/base/tmp/typescript.iife.js", (err) => {
+                        fs.copyFile("./dist/base/" + language + ".iife.js", "./dist/base/tmp/" + language + ".iife.js", (err) => {
                             if (err) throw err;
                         });
 
-                        zip.addLocalFolder("./dist/base/tmp");
-                        zip.writeZip("./dist/base/languages.zip");
-                        fs.rmSync("./dist/base/tmp", { recursive: true, force: true });
-
-                    } else if (err.code === 'ENOENT') {
-                        // file does not exist
-                        var zip = new AdmZip();
-                        zip.addLocalFile("./dist/base/typescript.iife.js");
-                        zip.writeZip("./dist/base/languages.zip");
-                    } else {
-                        console.log('Some other error: ', err.code);
-                    }
-                });
-
-                console.log("Zip file languages.zip created!")
-            } catch (e) {
-                console.log(`Error creating zip file. ${e}`);
-            }
-        } else if (language == "sql") {
-            try {
-                fs.stat("./dist/base/languages.zip", function(err, stat) {
-                    if (err == null) {
-                        var zip = new AdmZip("./dist/base/languages.zip");
-
-                        zip.extractAllTo("./dist/base/tmp", true);
-                        fs.copyFile("./dist/base/sql.iife.js", "./dist/base/tmp/sql.iife.js", (err) => {
-                            if (err) throw err;
-                        });
-
-                        zip.addLocalFolder("./dist/base/tmp");
-                        zip.writeZip("./dist/base/languages.zip");
-                        fs.rmSync("./dist/base/tmp", { recursive: true, force: true });
-
-                    } else if (err.code === 'ENOENT') {
-                        // file does not exist
-                        var zip = new AdmZip();
-                        zip.addLocalFile("./dist/base/sql.iife.js");
-                        zip.writeZip("./dist/base/languages.zip");
-                    } else {
-                        console.log('Some other error: ', err.code);
-                    }
-                });
-
-                console.log("Zip file languages.zip created!")
-            } catch (e) {
-                console.log(`Error creating zip file. ${e}`);
-            }
-        } else if (language == "p5") {
-            try {
-                fs.stat("./dist/base/languages.zip", function(err, stat) {
-                    if (err == null) {
-                        var zip = new AdmZip("./dist/base/languages.zip");
-
-                        zip.extractAllTo("./dist/base/tmp", true);
-                        fs.copyFile("./dist/base/p5.iife.js", "./dist/base/tmp/p5.iife.js", (err) => {
-                            if (err) throw err;
-                        });
-
-                        zip.addLocalFolder("./dist/base/tmp");
-                        zip.writeZip("./dist/base/languages.zip");
-                        fs.rmSync("./dist/base/tmp", { recursive: true, force: true });
-
-                    } else if (err.code === 'ENOENT') {
-                        // file does not exist
-                        var zip = new AdmZip();
-                        zip.addLocalFile("./dist/base/p5.iife.js");
-                        zip.writeZip("./dist/base/languages.zip");
-                    } else {
-                        console.log('Some other error: ', err.code);
-                    }
-                });
-
-                console.log("Zip file languages.zip created!")
-            } catch (e) {
-                console.log(`Error creating zip file. ${e}`);
-            }
-        } else if (language == "processing") {
-            try {
-                fs.stat("./dist/base/languages.zip", function(err, stat) {
-                    if (err == null) {
-                        var zip = new AdmZip("./dist/base/languages.zip");
-
-                        zip.extractAllTo("./dist/base/tmp", true);
-                        fs.copyFile("./dist/base/processing.iife.js", "./dist/base/tmp/processing.iife.js", (err) => {
-                            if (err) throw err;
-                        });
-
-                        zip.addLocalFolder("./dist/base/tmp");
-                        zip.writeZip("./dist/base/languages.zip");
-                        fs.rmSync("./dist/base/tmp", { recursive: true, force: true });
-
-                    } else if (err.code === 'ENOENT') {
-                        // file does not exist
-                        var zip = new AdmZip();
-                        zip.addLocalFile("./dist/base/processing.iife.js");
-                        zip.writeZip("./dist/base/languages.zip");
-                    } else {
-                        console.log('Some other error: ', err.code);
-                    }
-                });
-
-                console.log("Zip file languages.zip created!")
-            } catch (e) {
-                console.log(`Error creating zip file. ${e}`);
-            }
-        } else if (language == "ml") {
-            try {
-                fs.stat("./dist/base/languages.zip", function(err, stat) {
-                    if (err == null) {
-                        var zip = new AdmZip("./dist/base/languages.zip");
-
-                        zip.extractAllTo("./dist/base/tmp", true);
-                        fs.copyFile("./dist/base/ml.iife.js", "./dist/base/tmp/ml.iife.js", (err) => {
-                            if (err) throw err;
-                        });
-
-                        zip.addLocalFolder("./dist/base/tmp");
-                        zip.writeZip("./dist/base/languages.zip");
-                        fs.rmSync("./dist/base/tmp", { recursive: true, force: true });
-
-                    } else if (err.code === 'ENOENT') {
-                        // file does not exist
-                        var zip = new AdmZip();
-                        zip.addLocalFile("./dist/base/ml.iife.js");
-                        zip.writeZip("./dist/base/languages.zip");
-                    } else {
-                        console.log('Some other error: ', err.code);
-                    }
-                });
-
-                console.log("Zip file languages.zip created!")
-            } catch (e) {
-                console.log(`Error creating zip file. ${e}`);
-            }
-        } else if (language == "cpp-offline") {
-            try {
-                fs.stat("./dist/base/languages.zip", function(err, stat) {
-                    if (err == null) {
-                        var zip = new AdmZip("./dist/base/languages.zip");
-
-                        zip.extractAllTo("./dist/base/tmp", true);
-                        fs.copyFile("./dist/base/cpp-offline.iife.js", "./dist/base/tmp/cpp-offline.iife.js", (err) => {
-                            if (err) throw err;
-                        });
-
-                        child_process.exec("cp ./dist/base/utils/cpp ./dist/base/tmp/utils -r", (err, stdout, stderr) => {
+                        child_process.exec("cp ./dist/base/utils/" + short_name + " ./dist/base/tmp/utils -r", (err, stdout, stderr) => {
                             if (err) {
                                 console.log("[ERROR] creating zip file");
                                 cb(err);
                             } else {
                                 zip.addLocalFolder("./dist/base/tmp");
-                                zip.addLocalFolder("./dist/base/utils/cpp", "/utils/cpp");
-                                zip.writeZip("./dist/base/languages.zip");
+                                zip.addLocalFolder("./dist/base/utils/" + short_name, "/utils/" + short_name);
+                                zip.writeZip("./dist/base/export_languages.zip");
                                 fs.rmSync("./dist/base/tmp", { recursive: true, force: true });
                             }
                         });
                     } else if (err.code === 'ENOENT') {
                         // file does not exist
                         var zip = new AdmZip();
-                        zip.addLocalFile("./dist/base/cpp-offline.iife.js");
-                        zip.addLocalFolder("./dist/base/utils/cpp", "/utils/cpp");
-                        zip.writeZip("./dist/base/languages.zip");
+                        zip.addLocalFile("./dist/base/" + language + ".iife.js");
+                        zip.addLocalFolder("./dist/base/utils/" + short_name, "/utils/" + short_name);
+                        zip.writeZip("./dist/base/export_languages.zip");
                     } else {
                         console.log('Some other error: ', err.code);
                     }
                 });
 
-                console.log("Zip file languages.zip created!")
+                console.log("Zip file export_languages.zip created!")
             } catch (e) {
                 console.log(`Error creating zip file. ${e}`);
             }
-        } else if (language == "python-offline") {
-            try {
-                fs.stat("./dist/base/languages.zip", function(err, stat) {
-                    if (err == null) {
-                        var zip = new AdmZip("./dist/base/languages.zip");
-
-                        zip.extractAllTo("./dist/base/tmp", true);
-                        fs.copyFile("./dist/base/python-offline.iife.js", "./dist/base/tmp/python-offline.iife.js", (err) => {
-                            if (err) throw err;
-                        });
-
-                        child_process.exec("cp ./dist/base/utils/python ./dist/base/tmp/utils -r", (err, stdout, stderr) => {
-                            if (err) {
-                                console.log("[ERROR] creating zip file");
-                                cb(err);
-                            } else {
-                                zip.addLocalFolder("./dist/base/tmp");
-                                zip.addLocalFolder("./dist/base/utils/python", "/utils/python");
-                                zip.writeZip("./dist/base/languages.zip");
-                                fs.rmSync("./dist/base/tmp", { recursive: true, force: true });
-                            }
-                        });
-                    } else if (err.code === 'ENOENT') {
-                        // file does not exist
-                        var zip = new AdmZip();
-                        zip.addLocalFile("./dist/base/python-offline.iife.js");
-                        zip.addLocalFolder("./dist/base/utils/python", "/utils/python");
-                        zip.writeZip("./dist/base/languages.zip");
-                    } else {
-                        console.log('Some other error: ', err.code);
-                    }
-                });
-
-                console.log("Zip file languages.zip created!")
-            } catch (e) {
-                console.log(`Error creating zip file. ${e}`);
-            }
-        } else if (language == "java-offline") {
-            try {
-                fs.stat("./dist/base/languages.zip", function(err, stat) {
-                    if (err == null) {
-                        var zip = new AdmZip("./dist/base/languages.zip");
-
-                        zip.extractAllTo("./dist/base/tmp", true);
-                        fs.copyFile("./dist/base/java-offline.iife.js", "./dist/base/tmp/java-offline.iife.js", (err) => {
-                            if (err) throw err;
-                        });
-
-                        child_process.exec("cp ./dist/base/utils/java ./dist/base/tmp/utils -r", (err, stdout, stderr) => {
-                            if (err) {
-                                console.log("[ERROR] creating zip file");
-                                cb(err);
-                            } else {
-                                zip.addLocalFolder("./dist/base/tmp");
-                                zip.addLocalFolder("./dist/base/utils/java", "/utils/java");
-                                zip.writeZip("./dist/base/languages.zip");
-                                fs.rmSync("./dist/base/tmp", { recursive: true, force: true });
-                            }
-                        });
-                    } else if (err.code === 'ENOENT') {
-                        // file does not exist
-                        var zip = new AdmZip();
-                        zip.addLocalFile("./dist/base/java-offline.iife.js");
-                        zip.addLocalFolder("./dist/base/utils/java", "/utils/java");
-                        zip.writeZip("./dist/base/languages.zip");
-                    } else {
-                        console.log('Some other error: ', err.code);
-                    }
-                });
-
-                console.log("Zip file languages.zip created!")
-            } catch (e) {
-                console.log(`Error creating zip file. ${e}`);
-            }
-        } else if (language == "full-offline") {
+        } else if (language == "full-offline" || language == "full") {
             try {
                 var zip = new AdmZip();
-                zip.addLocalFile("./dist/base/full-offline.iife.js");
-                zip.addLocalFolder("./dist/base/utils", "/utils");
-                zip.writeZip("./dist/base/languages.zip");
-                console.log("Zip file languages.zip created!")
+                zip.addLocalFile("./dist/base/" + language + ".iife.js");
+
+                if (language == "full-offline") {
+                    zip.addLocalFolder("./dist/base/utils", "/utils");
+                }
+
+                zip.writeZip("./dist/base/export_languages.zip");
+                console.log("Zip file export_languages.zip created!")
             } catch (e) {
                 console.log(`Error creating zip file. ${e}`);
             }
