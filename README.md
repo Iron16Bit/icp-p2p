@@ -32,7 +32,7 @@ npm run build-all
 
 Build for a specific language;
 ```
-npm run build -- --language python
+npm run build -- --language python --incremental n
 ```
 
 **Note**: before building for c/c++/python/java, you need to prepare the webworker:
@@ -49,6 +49,17 @@ The build-all command will generate a `dist/base` folder with the following file
 - `example.html`: an example showcasing the main elements exported by the library;
 - various css files: styles to make the slides work.
 
+### Command structure
+
+The command used to build support for languages follows this structure:
+
+```
+npm run build -- --language lang --incremental y/n [--mobile y/n]
+```
+
+- language: the language to be built
+- incremental: if the new language should overwrite the ones already built or not
+- mobile: if the .zip file to export langauge support to mobile devices should be built
 
 ## Redbean file
 The resulting Redbean file contains the dependencies to compile and run all programming languages supported by ICPs, so it is quite heavy.
