@@ -39,19 +39,16 @@ export default (cb) => {
     }
     const language = args["language"] == "p5" || args["language"] == "processing" ? "p5-and-processing" : args["language"];
 
+    var incremental;
+
     if (args["incremental"] == undefined) {
+        incremental = false;
+    } else {
         console.log("Please specify if languages should be built incrementally using:");
-        console.log("\tnpm run build -- --language python --incremental y/n\n");
-        process.exit(1);
-    } else if (args["incremental"] != "y" && args["incremental"] != "n") {
-        console.log("Please specify if languages should be built incrementally using:");
-        console.log("\tnpm run build -- --language python --incremental y/n\n");
-        process.exit(1);
+        incremental = true;
     }
 
-    const incremental = args["incremental"]
-
-    if (incremental == "n") {
+    if (!incremental) {
         child_process.exec(`rm -r ./dist`, (err, stdout, stderr) => {
             if (err) {
                 console.log("[ERROR] deleting /dist dir");
@@ -60,13 +57,13 @@ export default (cb) => {
         });
     }
 
-    if (args["mobile"] != undefined && args["mobile"] != "y" && args["mobile"] != "n") {
-        console.log("Mobile argument must be omitted or specified as y/n:");
-        console.log("\tnpm run build -- --language python [--mobile y/n]\n");
-        process.exit(1);
-    }
+    var mobile;
 
-    const mobile = args["mobile"]
+    if (args["mobile"] == undefined) {
+        mobile = false;
+    } else {
+        mobile = true;
+    }
 
     console.log(`Building the project for '${language}' - this may take a while...`);
     
@@ -90,7 +87,7 @@ export default (cb) => {
         console.log("Build completed!");
 
         if (language == "javascript" || language == "typescript" || language == "sql" || language == "p5" || language == "processing" || language == "standard-ml" || language == "cpp" || language == "java" || language == "python") {
-            if (mobile == "y") {
+            if (mobile) {
                 try {
                     fs.stat("./dist/base/export_languages.zip", function(err, stat) {
                         if (err == null) {
@@ -121,7 +118,7 @@ export default (cb) => {
                 }
             }
         } else if (language == "cpp-offline" || language == "java-offline" || language == "python-offline") {
-            if (mobile == "y") {
+            if (mobile) {
                 var short_name;
                 if (language == "cpp-offline") {
                     short_name = "cpp";
@@ -169,7 +166,7 @@ export default (cb) => {
                 }
             }
         } else if (language == "full-offline" || language == "full") {
-            if (mobile == "y") {
+            if (mobile) {
                 try {
                     var zip = new AdmZip();
                     zip.addLocalFile("./dist/base/" + language + ".iife.js");

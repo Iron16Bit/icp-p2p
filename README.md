@@ -32,7 +32,7 @@ npm run build-all
 
 Build for a specific language;
 ```
-npm run build -- --language python --incremental n
+npm run build -- --language python
 ```
 
 **Note**: before building for c/c++/python/java, you need to prepare the webworker:
@@ -54,7 +54,7 @@ The build-all command will generate a `dist/base` folder with the following file
 The command used to build support for languages follows this structure:
 
 ```
-npm run build -- --language lang --incremental y/n [--mobile y/n]
+npm run build -- --language lang [--incremental] [--mobile]
 ```
 
 - language: the language to be built
