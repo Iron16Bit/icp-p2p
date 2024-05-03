@@ -122,6 +122,12 @@
             showMessage(isTextLocked ? "Text locked" : "Text unlocked");
         });
     });
+
+    var checkWidth = window.matchMedia("(max-width: 992px)")
+    let mobile = false;
+    if (checkWidth.matches) {
+        mobile = true;
+    }
 </script>
 
 <div
@@ -142,7 +148,12 @@
         <label id="settings-button" class="settings-button" for="menu-open">
             <svg
                 class="settings"
-                style="width: min(0.8vw, 1.6vh); height: min(0.8vw, 1.6vh)"
+                style="width: {mobile == true
+                    ? `min(2vw, 3vh)`
+                    : ` min(0.8vw, 1.6vh)`};
+                height: {mobile == true
+                    ? `min(2vw, 3vh)`
+                    : ` min(0.8vw, 1.6vh)`}"
                 viewBox="0 0 14 14"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +171,12 @@
             style="background-color: #00CC3D;"
         >
             <svg
-                style="width: min(0.62vw, 1.24vh); height: min(0.72vw, 1.44vh);"
+                style="width: {mobile == true
+                    ? `min(2vw, 3vh)`
+                    : ` min(0.8vw, 1.6vh)`};
+                height: {mobile == true
+                    ? `min(2vw, 3vh)`
+                    : ` min(0.8vw, 1.6vh)`}"
                 viewBox="0 0 12 14"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -181,7 +197,12 @@
             style="background-color: {tabsEnabled ? '#00cc3d' : '#ff4133'}"
         >
             <svg
-                style="width: min(0.72vw, 1.44vh); height: min(0.62vw, 1.24vh);"
+                style="width: {mobile == true
+                    ? `min(2vw, 3vh)`
+                    : ` min(0.8vw, 1.6vh)`};
+                height: {mobile == true
+                    ? `min(2vw, 3vh)`
+                    : ` min(0.8vw, 1.6vh)`}"
                 viewBox="0 0 14 12"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +219,12 @@
             style="background-color: #ff4133"
         >
             <svg
-                style="width: min(0.65vw, 1.3vh); height: min(0.65vw, 1.3vh)"
+                style="width: {mobile == true
+                    ? `min(2vw, 3vh)`
+                    : ` min(0.8vw, 1.6vh)`};
+                height: {mobile == true
+                    ? `min(2vw, 3vh)`
+                    : ` min(0.8vw, 1.6vh)`}"
                 viewBox="0 0 13 13"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"

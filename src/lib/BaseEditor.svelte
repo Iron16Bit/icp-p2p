@@ -191,7 +191,7 @@
     }}
     style="position: absolute; right: {type == 'vertical'
       ? `calc(var(--output-height) + min(0.5vw, 1vh))`
-      : `min(0.5vw, 1vh)`}; top: min(0.5vw, 1vh); width: min(3vw, 6vh); height: min(3vw, 6vh); border: 0px; border-radius: .4em; display: flex; justify-content: center; align-items: center; z-index: 99; background-color: transparent; cursor: pointer;"
+      : `min(0.5vw, 1vh)`}; top: min(0.5vw, 1vh); width: min(4.5vw, 9vh); height: min(4.5vw, 9vh); border: 0px; border-radius: .4em; display: flex; justify-content: center; align-items: center; z-index: 99; background-color: transparent; cursor: pointer;"
   >
     {#if isFullscreen}
       <svg
@@ -338,7 +338,7 @@
     vertical-align: baseline;
     line-height: normal;
     font-size: medium;
-    text-align: left;
+    text-align: left
   }
 
   #code-container {

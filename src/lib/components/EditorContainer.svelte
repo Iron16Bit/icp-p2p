@@ -299,7 +299,7 @@
             padding: min(0.05vw, 0.1vh) 0 0 min(0.6vw, 1.2vh);
             margin: 0;
             font-family: monospace;
-            font-size: min(1.65vw, 3.3vh);
+            font-size: min(2vw, 4vh);
             white-space: pre-wrap;
         }
     }
@@ -312,7 +312,8 @@
     @media screen and (max-width: 992px) {
         .cm-editor {
             height: 100%;
-            font-size: min(1.65vw, 3.3vh);
+            font-size: min(2vw, 4vh);
+            margin-right: min(5vw, 11vh);
         }
     }
     

@@ -56,7 +56,7 @@
   
   style="position: absolute; right: {type == 'vertical'
     ? `calc(var(--output-height) + min(0.75vw, 1.5vh))`
-    : `min(0.75vw, 1.5vh)`}; top: min(3.75vw, 7.5vh); padding: min(0.25vw, 0.5vh); width: min(2.55vw, 5.1vh); height: min(2.55vw, 5.1vh); border: 0px; border-radius: .4em; display: flex; justify-content: center; align-items: center; z-index: 99; background-color: var(--theme-color); cursor: pointer;"
+    : `min(0.75vw, 1.5vh)`}; top: min(5vw, 10vh); padding: min(0.25vw, 0.5vh); width: min(3.4vw, 6.8vh); height: min(3.4vw, 6.8vh); border: 0px; border-radius: .4em; display: flex; justify-content: center; align-items: center; z-index: 99; background-color: var(--theme-color); cursor: pointer;"
 >
   {#if theme == "dark"}
     <svg
