@@ -49,12 +49,14 @@ export default (cb) => {
     }
 
     if (!incremental) {
-        child_process.exec(`rm -r ./dist`, (err, stdout, stderr) => {
-            if (err) {
-                console.log("[ERROR] deleting /dist dir");
-                cb(err);
-            }
-        });
+        if (fs.existsSync("./dist")) {
+            child_process.exec(`rm -r ./dist`, (err, stdout, stderr) => {
+                if (err) {
+                    console.log("[ERROR] deleting /dist dir");
+                    cb(err);
+                }
+            });
+        }
     }
 
     var mobile;

@@ -254,7 +254,7 @@
 <style>
     #settings-container {
         position: absolute;
-        z-index: 10;
+        z-index: 99;
     }
     #settings-button {
         transition: all ease-in 150ms;

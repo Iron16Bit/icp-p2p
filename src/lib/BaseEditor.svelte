@@ -272,9 +272,11 @@
     editableconf={editableFilterConfiguration}
     {code}
     on:changedout={(event) => {
+      event.stopPropagation();
       output = event.detail.output;
     }}
     on:showmsg={(event) => {
+      event.stopPropagation();
       showMessage(event.detail);
     }}
   />

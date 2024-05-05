@@ -158,6 +158,7 @@
             : ""}
         id="editor"
     />
+    <div id="cover"></div>
     <!-- Output -->
     <div
         bind:this={outputContainer}
@@ -313,10 +314,20 @@
         .cm-editor {
             height: 100%;
             font-size: min(2vw, 4vh);
-            margin-right: min(5vw, 11vh);
+            /* margin-right: min(5vw, 11vh); */
         }
     }
-    
+    @media screen and (max-width: 992px) {
+        #cover {
+            height: calc(100% - min(1.6vw, 3.2vh));
+            width: min(5vw, 11vh);
+            display: block;
+            left: calc(100% - min(5vw, 11vh));
+            top: 0;
+            position: absolute;
+            z-index: 90;
+        }
+    }
 
     .cm-scroller {
         overflow: auto;

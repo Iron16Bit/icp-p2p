@@ -520,7 +520,7 @@ ${code}
       width: min(4vw, 8vh);
       height: min(4vw, 8vh);
       position: absolute;
-      z-index: 10;
+      z-index: 99;
     }
   }
 
