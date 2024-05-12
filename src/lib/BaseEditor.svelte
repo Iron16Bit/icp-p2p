@@ -142,6 +142,10 @@
         "--theme-color",
         theme == "dark" ? "#cccccc" : "#ffee00"
       );
+      rootElement.style.setProperty(
+        "--text-size",
+        textSize
+      )
     }
   }
 
@@ -154,6 +158,15 @@
   if (checkWidth.matches) {
     mobile = true;
   }
+
+  async function loadJSON (url) {
+    const res = await fetch(url);
+    return await res.json();
+  }
+  var textSize = "10px";
+  loadJSON('./textSize.json').then(data => {
+    textSize = JSON.stringify(data) + "px";
+  });
 </script>
 
 <!-- Editor's HTML -->
