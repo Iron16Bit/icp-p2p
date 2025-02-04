@@ -67,9 +67,15 @@
         );
     }
 
-    onMount(() => {
-        createWorker();
-    });
+    function handleImportLanguage(event) { 
+        if (event.detail.language == "java") {
+            if (window.confirm("You will need to import up to 12.3 MB. Is that ok?")) {
+                createWorker()
+            }
+        }
+    }
+
+    window.addEventListener("importLanguage", handleImportLanguage);
 </script>
 
 <base-editor
@@ -83,7 +89,4 @@
     save={save && id != ""}
     offline={true}
     language="java"
-    on:recreateworker={(event) => {
-        createWorker();
-    }}
 />

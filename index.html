@@ -29,7 +29,7 @@
   </script>
 
   <!-- Bundle containing the code playground web components -->
-  <script type="module" src="/src/exports/full.ts"></script>
+  <script type="module" src="/src/exports/full-offline.ts"></script>
 </head>
 
 <body class="h-screen full-page-demo reveal-viewport" data-page="icp" style="transition: transform 0.8s ease 0s;">
@@ -37,7 +37,6 @@
   <div class="reveal slide focused has-horizontal-slides ready" role="application" data-transition-speed="default"
     data-background-transition="fade">
     <div class="slides">
-      <section>
         <h3 class="title">Interactive Code Playgrounds</h3>
         <p class="subtitle">Developed Code Editors</p>
         <div>
@@ -64,19 +63,6 @@
         <p class="subtitle">&lt;javascript-editor /&gt;</p>
         <div class="big-code">
           <javascript-editor contenteditable="true" code="console.log('Hello World!')"></javascript-editor>
-        </div>
-      </section>
-      <section>
-        <p class="subtitle">&lt;python-editor <span class="emph">theme</span>="dark" /&gt;</p>
-        <div class="big-code">
-          <python-editor contenteditable="true" theme="dark" code="# This program adds two numbers
-num1 = 1.5
-num2 = 6.3
-
-sum = num1 + num2
-
-print('The sum of {0} and {1} is {2}'.format(num1, num2, sum))">
-          </python-editor>
         </div>
       </section>
       <section>

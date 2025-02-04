@@ -25,9 +25,15 @@
         webworker.port.postMessage({ type: "init", baseUrl });
     }
 
-    onMount(() => {
-        createWorker();
-    });
+    function handleImportLanguage(event) { 
+        if (event.detail.language == "cpp") {
+            if (window.confirm("You will need to import up to 58.1 MB. Is that ok?")) {
+                createWorker()
+            }
+        }
+    }
+
+    window.addEventListener("importLanguage", handleImportLanguage);
 </script>
 
 <base-editor
@@ -40,7 +46,4 @@
     {downloadable}
     save={save && id != ""}
     language="cpp"
-    on:recreateworker={(event) => {
-        createWorker();
-    }}
 />

@@ -16,9 +16,15 @@
 
     let webworker: Worker;
 
-    onMount(() => {
-        webworker = new SqlWorker();
-    });
+    function handleImportLanguage(event) { 
+        if (event.detail.language == "sql") {
+            if (window.confirm("You will need to import up to 1.5 MB. Is that ok?")) {
+                webworker = new SqlWorker()
+            }
+        }
+    }
+
+    window.addEventListener("importLanguage", handleImportLanguage);
 </script>
 
 <base-editor
@@ -33,8 +39,5 @@
     language="sql"
     modules={{
         "createHTMLTable": createHTMLTable
-    }}
-    on:recreateworker={(event) => {
-        webworker = new SqlWorker();
     }}
 />

@@ -460,6 +460,21 @@ ${code}
     }
   }
 
+  function handleClick() {
+    if (((language != 'p5' && language != "processing") && webworker == undefined) || 
+      ((language == 'p5' && modules["p5"] == undefined)
+      || (language == 'processing' && modules["p5"] == undefined))) {
+      // Button is disabled, try creating the worker
+      const importLanguageEvent = new CustomEvent("importLanguage", {
+        detail: { language }
+      });
+      window.dispatchEvent(importLanguageEvent);
+    } else {
+      // Run code
+      runCode(event)
+    }
+  }
+
   onMount(() => {
     observer.observe(ref);
   });
@@ -474,14 +489,11 @@ ${code}
 >
   <main />
   <button
-    on:click={runCode}
-    disabled={webworker == undefined &&
-      language != "p5" &&
-      language != "processing"}
+    on:click={handleClick}
     id="run-button"
-    style="background-color: {webworker != undefined ||
-    language == 'p5' ||
-    language == 'processing'
+    style="background-color: {webworker != undefined || 
+    ((language == 'p5' && modules["p5"] != undefined)
+    || (language == 'processing' && modules["p5"] != undefined))
       ? runButtonRunning
         ? '#ff4133'
         : '#00CC3D'
@@ -543,10 +555,6 @@ ${code}
   #run-button:hover {
     background-color: var(--run-button-bg-color-hover);
     transform: scale(1.1, 1.1);
-  }
-
-  #run-button:disabled {
-    cursor: not-allowed;
   }
 
   #run-button:focus {

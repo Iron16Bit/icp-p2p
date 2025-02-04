@@ -15,9 +15,15 @@
 
     let webworker: Worker;
 
-    onMount(() => {
-        webworker = new JavascriptWorker();
-    });
+    function handleImportLanguage(event) { 
+        if (event.detail.language == "javascript") {
+            if (window.confirm("You will need to import up to 500 KB. Is that ok?")) {
+                webworker = new JavascriptWorker()
+            }
+        }
+    }
+
+    window.addEventListener("importLanguage", handleImportLanguage);
 </script>
 
 <base-editor
@@ -30,7 +36,4 @@
     {downloadable}
     save={save && id != ""}
     language="javascript"
-    on:recreateworker={(event) => {
-        webworker = new JavascriptWorker();
-    }}
 />

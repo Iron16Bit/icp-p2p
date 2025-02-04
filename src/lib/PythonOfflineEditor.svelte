@@ -8,8 +8,6 @@
     export let save = false;
     export let downloadable = false;
 
-    import BaseEditor from "./BaseEditor.svelte";
-    import { onMount } from "svelte";
     import { python } from "@codemirror/lang-python";
 
     let webworker: SharedWorker;
@@ -34,9 +32,15 @@
         });
     }
 
-    onMount(() => {
-        createWorker();
-    });
+    function handleImportLanguage(event) { 
+        if (event.detail.language == "python") {
+            if (window.confirm("You will need to import up to 21.3 MB. Is that ok?")) {
+                createWorker()
+            }
+        }
+    }
+
+    window.addEventListener("importLanguage", handleImportLanguage);
 </script>
 
 <base-editor
@@ -50,7 +54,4 @@
     save={save && id != ""}
     offline={true}
     language="python"
-    on:recreateworker={(event) => {
-        createWorker();
-    }}
 />
