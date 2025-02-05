@@ -15,15 +15,9 @@
 
     let webworker: Worker;
 
-    function handleImportLanguage(event) { 
-        if (event.detail.language == "typescript") {
-            if (window.confirm("You will need to import up to 12.8 MB. Is that ok?")) {
-                webworker = new TypescriptWorker()
-            }
-        }
-    }
-
-    window.addEventListener("importLanguage", handleImportLanguage);
+    onMount(() => {
+        webworker = new TypescriptWorker();
+    });
 </script>
 
 <base-editor

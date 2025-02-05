@@ -16,15 +16,9 @@
 
     let webworker: Worker;
 
-    function handleImportLanguage(event) { 
-        if (event.detail.language == "ml") {
-            if (window.confirm("You will need to import up to 800 KB. Is that ok?")) {
-                webworker = new MLWorker()
-            }
-        }
-    }
-
-    window.addEventListener("importLanguage", handleImportLanguage);
+    onMount(() => {
+        webworker = new MLWorker();
+    });
 </script>
 
 <base-editor
@@ -37,4 +31,7 @@
     {downloadable}
     save={save && id != ""}
     language="ml"
+    on:recreateworker={(event) => {
+        webworker = new MLWorker();
+    }}
 />
