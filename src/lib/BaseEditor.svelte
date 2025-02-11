@@ -163,10 +163,13 @@
     const res = await fetch(url);
     return await res.json();
   }
+
   var textSize = "10px";
-  loadJSON('./textSize.json').then(data => {
-    textSize = JSON.stringify(data) + "px";
-  });
+  loadJSON('./textSize.json')
+    .then(data => {
+      textSize = JSON.stringify(data) + "px";
+    })
+    .catch(() => {}); // Ignore error, we are not using the mobile app
 </script>
 
 <!-- Editor's HTML -->
