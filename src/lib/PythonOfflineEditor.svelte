@@ -6,41 +6,51 @@
     export let code = "";
     export let id = "";
     export let save = false;
+    export let requestimport = "false";
     export let downloadable = false;
 
     import { python } from "@codemirror/lang-python";
+    import { onMount } from "svelte";
 
     let webworker: SharedWorker;
 
     function createWorker(): void {
         let baseUrl =
-            document.location.protocol +
-            "//" +
-            document.location.host +
-            document.location.pathname;
+        document.location.protocol +
+        "//" +
+        document.location.host +
+        document.location.pathname;
         baseUrl = baseUrl.substring(0, baseUrl.lastIndexOf("/"));
         baseUrl += "/utils/python/pyodide/";
 
         webworker = new SharedWorker(baseUrl + "pythonWorkerBundle.iife.js", {
-            name: "PythonWorker",
+        name: "PythonWorker",
         });
         webworker.port.start();
 
         webworker.port.postMessage({
-            type: "init",
-            baseUrl: baseUrl,
+        type: "init",
+        baseUrl: baseUrl,
         });
     }
 
-    function handleImportLanguage(event) { 
+    if (requestimport == "true") {
+        function handleImportLanguage(event) {
         if (event.detail.language == "python") {
-            if (window.confirm("You will need to import up to 21.3 MB. Is that ok?")) {
-                createWorker()
+            if (
+            window.confirm("You will need to import up to 21.3 MB. Is that ok?")
+            ) {
+            createWorker();
             }
         }
-    }
+        }
 
-    window.addEventListener("importLanguage", handleImportLanguage);
+        window.addEventListener("importLanguage", handleImportLanguage);
+    } else {
+        onMount(() => {
+        createWorker();
+        });
+    }
 </script>
 
 <base-editor

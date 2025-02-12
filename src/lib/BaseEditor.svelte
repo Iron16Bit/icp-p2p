@@ -142,10 +142,7 @@
         "--theme-color",
         theme == "dark" ? "#cccccc" : "#ffee00"
       );
-      rootElement.style.setProperty(
-        "--text-size",
-        textSize
-      )
+      rootElement.style.setProperty("--text-size", textSize);
     }
   }
 
@@ -153,20 +150,20 @@
     isFullscreen = document.fullscreenElement != null;
   });
 
-  var checkWidth = window.matchMedia("(max-width: 992px)")
+  var checkWidth = window.matchMedia("(max-width: 992px)");
   let mobile = false;
   if (checkWidth.matches) {
     mobile = true;
   }
 
-  async function loadJSON (url) {
+  async function loadJSON(url) {
     const res = await fetch(url);
     return await res.json();
   }
 
   var textSize = "10px";
-  loadJSON('./textSize.json')
-    .then(data => {
+  loadJSON("./textSize.json")
+    .then((data) => {
       textSize = JSON.stringify(data) + "px";
     })
     .catch(() => {}); // Ignore error, we are not using the mobile app
@@ -198,86 +195,86 @@
   <!-- Button allowing the user to toggle fullscreen -->
   {#if mobile}
     <button
-    on:click={() => {
-      if (isFullscreen) {
-        document.exitFullscreen();
-      } else if (rootElement && rootElement.requestFullscreen) {
-        rootElement.requestFullscreen();
-      }
-    }}
-    style="position: absolute; right: {type == 'vertical'
-      ? `calc(var(--output-height) + min(0.5vw, 1vh))`
-      : `min(0.5vw, 1vh)`}; top: min(0.5vw, 1vh); width: min(4.5vw, 9vh); height: min(4.5vw, 9vh); border: 0px; border-radius: .4em; display: flex; justify-content: center; align-items: center; z-index: 99; background-color: transparent; cursor: pointer;"
-  >
-    {#if isFullscreen}
-      <svg
-        style="height: 100%;"
-        fill={theme == "dark" ? "white" : "black"}
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M5 8h3V5h2v5H5V8Zm3 8H5v-2h5v5H8v-3Zm6 3h2v-3h3v-2h-5v5Zm2-14v3h3v2h-5V5h2Z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    {:else}
-      <svg
-        style="height: 100%;"
-        fill={theme == "dark" ? "white" : "black"}
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M7 10H5V5h5v2H7v3Zm-2 4h2v3h3v2H5v-5Zm12 3h-3v2h5v-5h-2v3ZM14 7V5h5v5h-2V7h-3Z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    {/if}
-  </button>
+      on:click={() => {
+        if (isFullscreen) {
+          document.exitFullscreen();
+        } else if (rootElement && rootElement.requestFullscreen) {
+          rootElement.requestFullscreen();
+        }
+      }}
+      style="position: absolute; right: {type == 'vertical'
+        ? `calc(var(--output-height) + min(0.5vw, 1vh))`
+        : `min(0.5vw, 1vh)`}; top: min(0.5vw, 1vh); width: min(4.5vw, 9vh); height: min(4.5vw, 9vh); border: 0px; border-radius: .4em; display: flex; justify-content: center; align-items: center; z-index: 99; background-color: transparent; cursor: pointer;"
+    >
+      {#if isFullscreen}
+        <svg
+          style="height: 100%;"
+          fill={theme == "dark" ? "white" : "black"}
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5 8h3V5h2v5H5V8Zm3 8H5v-2h5v5H8v-3Zm6 3h2v-3h3v-2h-5v5Zm2-14v3h3v2h-5V5h2Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      {:else}
+        <svg
+          style="height: 100%;"
+          fill={theme == "dark" ? "white" : "black"}
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7 10H5V5h5v2H7v3Zm-2 4h2v3h3v2H5v-5Zm12 3h-3v2h5v-5h-2v3ZM14 7V5h5v5h-2V7h-3Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      {/if}
+    </button>
   {:else}
     <button
-    on:click={() => {
-      if (isFullscreen) {
-        document.exitFullscreen();
-      } else if (rootElement && rootElement.requestFullscreen) {
-        rootElement.requestFullscreen();
-      }
-    }}
-    style="position: absolute; right: {type == 'vertical'
-      ? `calc(var(--output-height) + min(0.5vw, 1vh))`
-      : `min(0.5vw, 1vh)`}; top: min(0.5vw, 1vh); width: min(1.5vw, 3vh); height: min(1.5vw, 3vh); border: 0px; border-radius: .4em; display: flex; justify-content: center; align-items: center; z-index: 99; background-color: transparent; cursor: pointer;"
-  >
-    {#if isFullscreen}
-      <svg
-        style="height: 100%;"
-        fill={theme == "dark" ? "white" : "black"}
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M5 8h3V5h2v5H5V8Zm3 8H5v-2h5v5H8v-3Zm6 3h2v-3h3v-2h-5v5Zm2-14v3h3v2h-5V5h2Z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    {:else}
-      <svg
-        style="height: 100%;"
-        fill={theme == "dark" ? "white" : "black"}
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M7 10H5V5h5v2H7v3Zm-2 4h2v3h3v2H5v-5Zm12 3h-3v2h5v-5h-2v3ZM14 7V5h5v5h-2V7h-3Z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    {/if}
-  </button>
+      on:click={() => {
+        if (isFullscreen) {
+          document.exitFullscreen();
+        } else if (rootElement && rootElement.requestFullscreen) {
+          rootElement.requestFullscreen();
+        }
+      }}
+      style="position: absolute; right: {type == 'vertical'
+        ? `calc(var(--output-height) + min(0.5vw, 1vh))`
+        : `min(0.5vw, 1vh)`}; top: min(0.5vw, 1vh); width: min(1.5vw, 3vh); height: min(1.5vw, 3vh); border: 0px; border-radius: .4em; display: flex; justify-content: center; align-items: center; z-index: 99; background-color: transparent; cursor: pointer;"
+    >
+      {#if isFullscreen}
+        <svg
+          style="height: 100%;"
+          fill={theme == "dark" ? "white" : "black"}
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5 8h3V5h2v5H5V8Zm3 8H5v-2h5v5H8v-3Zm6 3h2v-3h3v-2h-5v5Zm2-14v3h3v2h-5V5h2Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      {:else}
+        <svg
+          style="height: 100%;"
+          fill={theme == "dark" ? "white" : "black"}
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7 10H5V5h5v2H7v3Zm-2 4h2v3h3v2H5v-5Zm12 3h-3v2h5v-5h-2v3ZM14 7V5h5v5h-2V7h-3Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      {/if}
+    </button>
   {/if}
 
   <!-- Settings Button: copy, reset, allow tabs -->
@@ -356,7 +353,7 @@
     vertical-align: baseline;
     line-height: normal;
     font-size: medium;
-    text-align: left
+    text-align: left;
   }
 
   #code-container {

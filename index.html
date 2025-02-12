@@ -69,14 +69,14 @@
       <section>
         <p class="subtitle">&lt;python-editor <span class="emph">theme</span>="dark" /&gt;</p>
         <div class="big-code">
-          <python-editor contenteditable="true" downloadable="true" id="cpp-example-dev" save="true" theme="dark" code='print("Hello, world!")'>
-          </cpp-editor>
+          <python-editor contenteditable="true" downloadable="true" requestImport="true" theme="dark" code='print("Hello, world!")'>
+          </python-editor>
         </div>
       </section>
       <section>
         <p class="subtitle">&lt;cpp-editor <span class="emph">theme</span>="dark" /&gt;</p>
         <div class="big-code">
-          <cpp-editor contenteditable="true" downloadable="true" id="cpp-example-dev" save="true" theme="dark" code='#include <iostream>
+          <cpp-editor contenteditable="true" downloadable="true" requestImport="true" theme="dark" code='#include <iostream>
 using namespace std;
 
 int main() {
@@ -108,7 +108,7 @@ console.log(greeter.greet());"></typescript-editor>
       <section>
         <p class="subtitle">&lt;java-editor <span class="emph">theme</span>="dark" /&gt;</p>
         <div class="big-code">
-          <java-editor contenteditable="true" theme="dark" code='public class HelloWorld {
+          <java-editor contenteditable="true" theme="dark" requestImport="true" code='public class HelloWorld {
   public static void main(String[] args) {
     System.out.println("<EDITABLE>Hello, World</EDITABLE>!"); 
   }

@@ -7,6 +7,7 @@
     export let id = "";
     export let save = false;
     export let downloadable = false;
+    export let requestimport = "false";
 
     import BaseEditor from "./BaseEditor.svelte";
     import { onMount } from "svelte";
@@ -67,15 +68,23 @@
         );
     }
 
-    function handleImportLanguage(event) { 
+    if (requestimport == "true") {
+        function handleImportLanguage(event) {
         if (event.detail.language == "java") {
-            if (window.confirm("You will need to import up to 12.3 MB. Is that ok?")) {
-                createWorker()
+            if (
+            window.confirm("You will need to import up to 12.3 MB. Is that ok?")
+            ) {
+            createWorker();
             }
         }
-    }
+        }
 
-    window.addEventListener("importLanguage", handleImportLanguage);
+        window.addEventListener("importLanguage", handleImportLanguage);
+    } else {
+        onMount(() => {
+        createWorker();
+        });
+    }
 </script>
 
 <base-editor

@@ -92,6 +92,7 @@ Every component has a set of properties that can be passed inside the tags:
 - `theme`: *light* or *dark* (but if the user has selected a default theme, the one chosen by the user will be used);
 - `type`: *normal* or *vertical*;
 - `downloadable`: if set to true, a download button will appear allowing to download the code snippet;
+- `requestimport`: if set to true, the browser will ask for user confirmation before importing a language;
 - `id` and `save`: if save is set to true, the code will be saved in local storage with key=id.
 
 To access these components you need to import a bundle in your HTML page. Which bundle to add depends on the language you want to use:
