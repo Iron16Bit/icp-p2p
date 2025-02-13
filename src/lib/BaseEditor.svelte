@@ -36,6 +36,7 @@
   import ThemeSwitch from "./components/ThemeSwitch.svelte";
   import DownloadButton from "./components/DownloadButton.svelte";
   import type { LanguageSupport } from "@codemirror/language";
+  import CooperationButton from "./components/CooperationButton.svelte";
 
   /**
    * ELEMENTS
@@ -191,6 +192,9 @@
   {#if downloadable}
     <download-button {language} {id} {theme} {type} code={userCode} />
   {/if}
+
+  <!-- Button allowing the user to use cooperative code edtior -->
+  <cooperation-button {type}/>
 
   <!-- Button allowing the user to toggle fullscreen -->
   {#if mobile}
