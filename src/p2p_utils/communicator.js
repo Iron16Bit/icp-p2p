@@ -6,11 +6,16 @@ export const eventSource = new EventSource('http://localhost:3000');
 // The browser client can send MSGs to the redbean from here
 export const redbean_url = "http://127.0.0.1:8080";
 
+var local_ip = "";
+
 // "Enum" with the various msg types
 // INTERNAL_PING = 0; 
 // PONG = 1; 
 // SETUP = 2;
 // PING = 3;
+// SETUP_COOPERATION = 4;
+// CONFIRM_COOPERATION = 5;
+// REFRESH = 6;
 
 // Utilities to transform a MSG JSON into a string and viceversa 
 export function serializeMsg(msg) {
@@ -65,12 +70,20 @@ eventSource.onmessage = (event) => {
             });
         } else if (message.type == 2) {
             // Received a SETUP msg
-            document.getElementById("local_ip").textContent += " " + message.data;
+            local_ip = message.data;
+        } else if (message.type == 5) {
+            // A peer wants to connect to us, ask for confirmation
+            console.log("AIUTOOOOOOO")
+            window.dispatchEvent(new CustomEvent("confirmCooperation", { detail: message.data }));
         }
     } catch (error) {
         console.error('Failed to deserialize message:', error);
     }
 };
+
+export function get_local_ip() {
+    return local_ip;
+}
 
 // Triggered when the connection is opened
 eventSource.onopen = () => {
@@ -80,4 +93,22 @@ eventSource.onopen = () => {
 // Triggered when an error occurs
 eventSource.onerror = (error) => {
     console.error('Error with SSE connection:', error);
+};
+
+window.onload = function () {
+    // On page refresh, tell the redbean_client
+    const msg = {
+        sender_ip: "localhost",
+        type: 6,
+        data: "NULL"
+    };
+    const serialized_msg = serializeMsg(msg);
+
+    fetch(redbean_url, {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "text": serialized_msg
+        }
+    });
 };

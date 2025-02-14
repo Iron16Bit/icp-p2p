@@ -2,7 +2,7 @@
 
 <script lang='ts'>
     import { writable } from "svelte/store";
-    import { serializeMsg, deserializeMsg, redbean_url } from "../../p2p_utils/communicator.js";
+    import { serializeMsg, deserializeMsg, redbean_url, get_local_ip } from "../../p2p_utils/communicator.js";
 
     export let type: "normal" | "vertical" = "normal";
     
@@ -10,14 +10,22 @@
     let dialogRef;
     let rootElement: HTMLElement;
     let text = writable("");
-    let communicatorLoaded = false;
+    let localIP = "Your IP: ";
+
+    let ipToConfirm = null;
+    let showConfirmation = false;
 
     const showPopup = async () => {
+        localIP = `Your IP: ${get_local_ip()}`;
+        showConfirmation = false;
+        ipToConfirm = null;
         dialogRef.showModal();
     };
 
     const closePopup = () => {
         dialogRef.close();
+        showConfirmation = false;
+        ipToConfirm = null;
     };
 
     function sendPing() {
@@ -53,6 +61,30 @@
             }
         });
     }
+
+    function handleConfirmCooperation(event) {
+        ipToConfirm = event.detail; // Assign IP from event
+        showConfirmation = true;
+        dialogRef.showModal(); // Ensure the dialog opens
+    }
+
+    function acceptCooperation() {
+        closePopup();
+    }
+
+    function rejectCooperation() {
+        showConfirmation = false;
+        ipToConfirm = null;
+    }
+
+    // Listen for confirmCooperation event
+    window.addEventListener("confirmCooperation", handleConfirmCooperation);
+
+    $: if (dialogRef && dialogRef.open) {
+        if (!showConfirmation && !ipToConfirm) {
+            localIP = `Local IP: ${get_local_ip()}`; 
+        }
+    }
 </script>
 
 <main>
@@ -65,8 +97,75 @@
     >
     </button>
     <dialog on:cancel={closePopup} bind:this={dialogRef}>
-        <button class="close" on:click={closePopup}>x</button>
-        <textarea bind:value={$text} placeholder="Enter IP"></textarea>
-        <button on:click={sendPing}>PING</button>
+        <div class="popup">
+            <button class="close" on:click={closePopup}>×</button>
+
+            {#if showConfirmation}
+                <p style="white-space: pre-line;">IP: {ipToConfirm}  
+    wants to connect to you</p>
+                <div class="confirmation-buttons">
+                    <button on:click={acceptCooperation}>Yes</button>
+                    <button on:click={rejectCooperation}>No</button>
+                </div>
+            {:else}
+                <p id="local_ip">{localIP}</p>
+                <div class="input-container">
+                    <textarea bind:value={$text} placeholder="Enter IP"></textarea>
+                    <button on:click={sendPing}>PING</button>
+                </div>
+            {/if}
+        </div>
     </dialog>
 </main>
+
+<style>
+    dialog {
+        border: none;
+        border-radius: 8px;
+        padding: 16px;
+        width: 300px;
+        position: relative;
+    }
+
+    .popup {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .close {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    #local_ip {
+        min-height: 20px;
+        text-align: center;
+    }
+
+    .input-container {
+        display: flex;
+        gap: 8px;
+    }
+
+    .confirmation-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    textarea {
+        flex: 1;
+        resize: none;
+        height: 30px;
+    }
+
+    button {
+        padding: 6px 12px;
+    }
+</style>

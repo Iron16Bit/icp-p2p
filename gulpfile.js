@@ -184,7 +184,7 @@ export default (cb) => {
                 }
             }
             console.log("Setting up redbean.com for full offline mode.")
-            child_process.exec("cp src/p2p_utils/redbean.com dist/base/redbean.com", (err, stdout, stderr) => {
+            child_process.exec("bash build.sh", (err, stdout, stderr) => {
                 if (err) {
                     console.log("[ERROR]", err);
                 } else {
