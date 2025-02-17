@@ -16,6 +16,7 @@ var local_ip = "";
 // SETUP_COOPERATION = 4;
 // CONFIRM_COOPERATION = 5;
 // REFRESH = 6;
+// COOPERATION_READY = 7;
 
 // Utilities to transform a MSG JSON into a string and viceversa 
 export function serializeMsg(msg) {
@@ -70,11 +71,15 @@ eventSource.onmessage = (event) => {
             });
         } else if (message.type == 2) {
             // Received a SETUP msg
-            local_ip = message.data;
+            let ip = message.data.trim(); // Trim spaces
+            ip = ip.replace(/\r/g, ""); // Remove carriage return if present
+            local_ip = ip;
         } else if (message.type == 5) {
             // A peer wants to connect to us, ask for confirmation
-            console.log("AIUTOOOOOOO")
             window.dispatchEvent(new CustomEvent("confirmCooperation", { detail: message.data }));
+        } else if (message.type == 7) {
+            // The connection with the peer is ready
+            window.dispatchEvent(new CustomEvent("cooperationReady"));
         }
     } catch (error) {
         console.error('Failed to deserialize message:', error);
@@ -95,8 +100,7 @@ eventSource.onerror = (error) => {
     console.error('Error with SSE connection:', error);
 };
 
-window.onload = function () {
-    // On page refresh, tell the redbean_client
+window.addEventListener("beforeunload", async function (event) {
     const msg = {
         sender_ip: "localhost",
         type: 6,
@@ -104,11 +108,17 @@ window.onload = function () {
     };
     const serialized_msg = serializeMsg(msg);
 
-    fetch(redbean_url, {
-        method: "POST",
-        headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            "text": serialized_msg
-        }
-    });
-};
+    try {
+        await fetch(redbean_url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8",
+                "text": serialized_msg
+            },
+            body: JSON.stringify(msg),
+            keepalive: true // Ensures request completes even if page unloads
+        });
+    } catch (error) {
+        console.error("Fetch failed:", error);
+    }
+});
