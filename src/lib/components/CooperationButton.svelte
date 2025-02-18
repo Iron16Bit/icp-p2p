@@ -2,13 +2,13 @@
 
 <script lang='ts'>
     import { writable } from "svelte/store";
-    import { serializeMsg, deserializeMsg, redbean_url, get_local_ip } from "../../p2p_utils/communicator.js";
+    import { serializeMsg, redbean_url, get_local_ip } from "../../p2p_utils/communicator.js";
     import { tick } from "svelte";
 
     export let type: "normal" | "vertical" = "normal";
     
 
-    let dialogRef;
+    let dialogRef: HTMLDialogElement;
     let rootElement: HTMLElement;
     let text = writable("");
     let localIP = "Your IP: ";
@@ -18,14 +18,21 @@
 
     let visibleButton = 'original';
 
-    const showPopup = async () => {
-        localIP = `Your IP: ${get_local_ip()}`;
+    localStorage.setItem('cooperation', 'false');
 
-        if (!dialogRef.open) { // Prevent reopening if already open
-            showConfirmation = false;
-            ipToConfirm = null;
-            await tick(); // Ensure state updates before opening
-            dialogRef.showModal();
+    const showPopup = async () => {
+        let cooperation = localStorage.getItem('cooperation');
+        if (cooperation === 'false') {
+            localIP = `Your IP: ${get_local_ip()}`;
+
+            if (!dialogRef.open) { // Prevent reopening if already open
+                showConfirmation = false;
+                ipToConfirm = null;
+                await tick(); // Ensure state updates before opening
+                dialogRef.showModal();
+            }
+        } else {
+            window.alert("Another cooperative session is already in use. Close it before starting a new one.")
         }
     };
 
@@ -76,57 +83,17 @@
         dialogRef.showModal(); // Ensure the dialog opens
     }
 
-    // Function to disable the arrows and block keyboard arrows
-    function disableArrows() {
-        // Hide the control arrows
-        document.querySelectorAll('.controls-arrow').forEach(div => {
-            (div as HTMLElement).style.visibility = "hidden";
-            (div as HTMLElement).style.display = "none";
-        });
-
-        // Block left and right arrow key presses
-        document.addEventListener('keydown', blockArrowKeys);
-    }
-
-    // Function to block left and right arrow key presses
-    function blockArrowKeys(event) {
-        // Check if the focused element is inside a CodeMirror editor
-        const focusedElement = document.activeElement;
-        const isCodeMirrorFocused = focusedElement && focusedElement.closest('.CodeMirror');
-
-        // Prevent left and right arrow key presses if inside a locked slide or editor
-        if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && !isCodeMirrorFocused) {
-            event.preventDefault();
-        }
-    }
-
-    // Function to enable the arrows and restore keyboard functionality
-    function enableArrows() {
-        // Restore the visibility and display of the control arrows
-        document.querySelectorAll('.controls-arrow').forEach(div => {
-            (div as HTMLElement).style.visibility = "visible";
-            (div as HTMLElement).style.display = "block";
-        });
-
-        // Remove the event listener to allow keyboard arrows (left and right) again
-        document.removeEventListener('keydown', blockArrowKeys);
-    }
-
     function enableCooperationButton() {
         visibleButton = 'original';
-        enableArrows();
+        localStorage.setItem('cooperation', 'false');
     }
 
     function disableCooperationButton() {
         visibleButton = 'new';
-        disableArrows();
+        localStorage.setItem('cooperation', 'true');
     }
 
     function acceptCooperation() {
-        
-        // Disable arrows
-        disableArrows();
-        
         // Change cooperation button icon and what it does
         disableCooperationButton();
 
@@ -169,9 +136,6 @@
 
     function handleCooperationReady(event) {
         event.stopImmediatePropagation();
-
-        // Disable arrows
-        disableArrows();
 
         // Change cooperation button icon and what it does
         disableCooperationButton()
