@@ -17,6 +17,8 @@ var local_ip = "";
 // CONFIRM_COOPERATION = 5;
 // REFRESH = 6;
 // COOPERATION_READY = 7;
+// REQUEST_CODE = 8;
+// INITIALIZE_CODE = 9;
 
 // Utilities to transform a MSG JSON into a string and viceversa 
 export function serializeMsg(msg) {
@@ -80,6 +82,12 @@ eventSource.onmessage = (event) => {
         } else if (message.type == 7) {
             // The connection with the peer is ready
             window.dispatchEvent(new CustomEvent("cooperationReady"));
+        } else if (message.type == 8) {
+            // The peer is asking for the current editor code
+            window.dispatchEvent(new CustomEvent("requestCode"));
+        } else if (message.type == 9) {
+            // Tell to initialize the editor with the received code
+            window.dispatchEvent(new CustomEvent("initializeCode", { detail: message.data }));
         }
     } catch (error) {
         console.error('Failed to deserialize message:', error);

@@ -4,8 +4,13 @@
     import { writable } from "svelte/store";
     import { serializeMsg, redbean_url, get_local_ip } from "../../p2p_utils/communicator.js";
     import { tick } from "svelte";
+    import type { EditorView } from "@codemirror/view";
 
+    /**
+   * PROPS
+   */
     export let type: "normal" | "vertical" = "normal";
+    export let editor: EditorView;
     
 
     let dialogRef: HTMLDialogElement;
@@ -17,6 +22,9 @@
     let showConfirmation = false;
 
     let visibleButton = 'original';
+
+    // Updated every 500ms, contains the latest editor content. Used to compute modifications
+    let latestEditor = "";
 
     localStorage.setItem('cooperation', 'false');
 
@@ -140,10 +148,65 @@
         // Change cooperation button icon and what it does
         disableCooperationButton()
 
+        // Change msg for waiting for Editor content
+        const msg = {
+            sender_ip: "localhost",
+            type: 8,
+            data: "NULL"
+        };
+        const serialized_msg = serializeMsg(msg);
+
+        fetch(redbean_url, {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "text": serialized_msg
+            }
+        });
+
         closePopup();
     }
 
     window.addEventListener("cooperationReady", handleCooperationReady);
+
+    function handleRequestCode(event) {
+        event.stopImmediatePropagation();
+
+        latestEditor = editor.state.doc.toString();
+
+        // Change msg for waiting for Editor content
+        const msg = {
+            sender_ip: "localhost",
+            type: 9,
+            data: latestEditor
+        };
+        const serialized_msg = serializeMsg(msg);
+
+        fetch(redbean_url, {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "text": serialized_msg
+            }
+        });
+
+        closePopup();
+    }
+
+    window.addEventListener("requestCode", handleRequestCode);
+
+    function handleInitializeCode(event) {
+        event.stopImmediatePropagation();
+
+        latestEditor = event.detail;
+
+        // Update editor content
+        editor.dispatch({
+            changes: { from: 0, to: editor.state.doc.length, insert: latestEditor }
+        });
+    }
+
+    window.addEventListener("initializeCode", handleInitializeCode);
 </script>
 
 <main>

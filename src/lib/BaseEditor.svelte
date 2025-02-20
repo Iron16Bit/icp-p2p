@@ -194,7 +194,10 @@
   {/if}
 
   <!-- Button allowing the user to use cooperative code edtior -->
-  <cooperation-button {type}/>
+  <cooperation-button 
+    {type}
+    editor={codeMirrorEditor}
+  />
 
   <!-- Button allowing the user to toggle fullscreen -->
   {#if mobile}
