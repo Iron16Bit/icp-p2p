@@ -2,9 +2,11 @@
 
 <script lang='ts'>
     import { writable } from "svelte/store";
-    import { serializeMsg, redbean_url, get_local_ip } from "../../p2p_utils/communicator.js";
+    import { serializeMsg, redbean_url, get_local_ip, serializeChangesetMsg } from "../../p2p_utils/communicator.js";
+    import { computeChangeset, applyChangeset, getCursorPosition } from "../../p2p_utils/changesets.js";
     import { tick } from "svelte";
     import type { EditorView } from "@codemirror/view";
+    import { EditorSelection } from "@codemirror/state";
 
     /**
    * PROPS
@@ -23,7 +25,10 @@
 
     let visibleButton = 'original';
 
-    // Updated every 500ms, contains the latest editor content. Used to compute modifications
+    let updateInterval: number | null = null;
+    let shouldUpdate = true;
+
+    // Updated every 100ms, contains the latest editor content. Used to compute modifications
     let latestEditor = "";
 
     localStorage.setItem('cooperation', 'false');
@@ -92,11 +97,13 @@
     }
 
     function enableCooperationButton() {
+        shouldUpdate = false;
         visibleButton = 'original';
         localStorage.setItem('cooperation', 'false');
     }
 
     function disableCooperationButton() {
+        shouldUpdate = true;
         visibleButton = 'new';
         localStorage.setItem('cooperation', 'true');
     }
@@ -207,6 +214,75 @@
     }
 
     window.addEventListener("initializeCode", handleInitializeCode);
+
+    // When the cooperation has started, we want to take the changes we have made in the editor every 100ms
+    function updateEditor() {
+        let currentEditor = editor.state.doc.toString();
+
+        if (currentEditor != latestEditor) {
+            let changeset = computeChangeset(latestEditor, currentEditor);
+
+            // Change msg for waiting for Editor content
+            const msg = {
+                sender_ip: "localhost",
+                type: 10,
+                data: changeset
+            };
+            const serialized_msg = serializeChangesetMsg(msg);
+
+            fetch(redbean_url, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                    "text": serialized_msg
+                }
+            });
+
+            latestEditor = currentEditor;
+        }
+    }
+
+    $: {
+        if (shouldUpdate) {
+            updateInterval = window.setInterval(updateEditor, 100);
+        } else if (updateInterval !== null) {
+            clearInterval(updateInterval);
+            updateInterval = null;
+        }
+    }
+
+    function handleReceivedChangeset(event) {
+        event.stopImmediatePropagation();
+
+        let receivedChangeset = event.detail;
+
+        let currentEditor = editor.state.doc.toString();
+        // Store the current focus in the editor
+        let selection = editor.state.selection.ranges[0].from;
+
+        // Compute the text we would get by applying the received changeset
+        let aPrime = applyChangeset(currentEditor, receivedChangeset);
+
+        // Compute how to go from current editor to the modified one
+        let xPrime = computeChangeset(currentEditor, aPrime);
+
+        // Apply the modifications
+        let yPrime = applyChangeset(currentEditor, xPrime);
+
+        // Compute new cursor position
+        let newSelection = getCursorPosition(currentEditor, yPrime, selection);
+        // Check it is within valid bounds
+        newSelection = Math.max(0, Math.min(newSelection, yPrime.length));
+
+        editor.dispatch({
+            changes: { from: 0, to: currentEditor.length, insert: yPrime },
+            selection: {anchor: newSelection, head: newSelection},
+        });
+
+        latestEditor = yPrime;
+    }
+
+    window.addEventListener("receivedChangeset", handleReceivedChangeset);
 </script>
 
 <main>

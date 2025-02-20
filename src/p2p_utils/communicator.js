@@ -19,6 +19,7 @@ var local_ip = "";
 // COOPERATION_READY = 7;
 // REQUEST_CODE = 8;
 // INITIALIZE_CODE = 9;
+// SEND_CHANGESET = 10;
 
 // Utilities to transform a MSG JSON into a string and viceversa 
 export function serializeMsg(msg) {
@@ -31,6 +32,20 @@ export function serializeMsg(msg) {
     return `${msg.sender_ip}|${msg.type}|${msg.data}`;
 }
 
+export function serializeChangesetMsg(msg) {
+    // Ensure the object contains the necessary fields
+    if (!msg.sender_ip || !msg.type || !msg.data || !Array.isArray(msg.data.modifications)) {
+        throw new Error("Invalid message structure");
+    }
+
+    // Serialize `data` as a compact JSON string
+    const serializedData = `${msg.data.oldLen},${msg.data.newLen},` +
+        msg.data.modifications.map(mod => (typeof mod === "number" ? mod : JSON.stringify(mod))).join(",");
+
+    // Serialize as a delimited string
+    return `${msg.sender_ip}|${msg.type}|${serializedData}`;
+}
+
 export function deserializeMsg(str) {
     // Split the string by the delimiter
     const parts = str.split("|");
@@ -38,11 +53,22 @@ export function deserializeMsg(str) {
         throw new Error("Invalid serialized message format");
     }
 
-    // Reconstruct the JSON object
+    const type = parseInt(parts[1], 10); // Convert type to an integer
+    let data = parts[2];
+
+    // If type is 10, parse the data into the expected JSON format
+    if (type === 10) {
+        const [oldLen, newLen, ...modifications] = data.split(",").map(item => {
+            return item.startsWith('"') ? JSON.parse(item) : parseInt(item, 10);
+        });
+
+        data = { oldLen, newLen, modifications };
+    }
+
     return {
         sender_ip: parts[0],
-        type: parseInt(parts[1], 10), // Convert type to an integer
-        data: parts[2],
+        type,
+        data,
     };
 }
 
@@ -88,6 +114,9 @@ eventSource.onmessage = (event) => {
         } else if (message.type == 9) {
             // Tell to initialize the editor with the received code
             window.dispatchEvent(new CustomEvent("initializeCode", { detail: message.data }));
+        } else if (message.type == 10) {
+            // Tell to update with the received changeset
+            window.dispatchEvent(new CustomEvent("receivedChangeset", { detail: message.data }));
         }
     } catch (error) {
         console.error('Failed to deserialize message:', error);

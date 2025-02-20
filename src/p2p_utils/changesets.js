@@ -70,6 +70,20 @@ export function computeChangeset(oldText, newText) {
     return changeset;
 }
 
+export function applyChangeset(text, changeset) {
+    let result = "";
+
+    for (const mod of changeset.modifications) {
+        if (typeof mod === "number") {
+            result += text[mod];
+        } else if (typeof mod === "string") {
+            result += mod;
+        }
+    }
+
+    return result;
+}
+
 /**
  * @param {{"oldLen": number, "newLen": number, "modifications": [number | string]}} changesetA
  * @param {{"oldLen": number, "newLen": number, "modifications": [number | string]}} changesetB
@@ -196,4 +210,23 @@ export function computeFollow(changesetA, mergedChangeset) {
         const index = changesetA["modifications"].indexOf(item);
         return index !== -1 ? index : item;
     });
+}
+
+export function getCursorPosition(oldText, newText, cursorPos) {
+    let cursorOffset = 0;
+
+    // Compare the oldText and newText until the cursor position to determine the offset
+    for (let i = 0; i < cursorPos; i++) {
+        if (oldText[i] !== newText[i + cursorOffset]) {
+            // If characters are different, handle insertions or deletions
+            let diffIndex = newText.indexOf(oldText[i], i + cursorOffset);
+            if (diffIndex === -1) {
+                cursorOffset++;
+            } else {
+                cursorOffset += diffIndex - (i + cursorOffset);
+            }
+        }
+    }
+    
+    return cursorPos + cursorOffset;
 }
