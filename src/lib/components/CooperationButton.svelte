@@ -6,7 +6,7 @@
     import { computeChangeset, applyChangeset, getCursorPosition } from "../../p2p_utils/changesets.js";
     import { tick } from "svelte";
     import type { EditorView } from "@codemirror/view";
-    import { EditorSelection } from "@codemirror/state";
+    import { EditorSelection, EditorState } from "@codemirror/state";
 
     /**
    * PROPS
@@ -26,7 +26,7 @@
     let visibleButton = 'original';
 
     let updateInterval: number | null = null;
-    let shouldUpdate = true;
+    let shouldUpdate = false;
 
     // Updated every 100ms, contains the latest editor content. Used to compute modifications
     let latestEditor = "";
@@ -58,7 +58,6 @@
     function sendPing() {
         let ip = $text.trim(); // Trim spaces
         ip = ip.replace(/\r/g, ""); // Remove carriage return if present
-        console.log("IP Sent:", ip, "Length:", ip.length);
 
         // Validate IPv4 format (optional but recommended)
         const ipv4Regex = new RegExp(
@@ -90,16 +89,35 @@
     }
 
     function handleConfirmCooperation(event) {
-        event.stopImmediatePropagation();
-        ipToConfirm = event.detail; // Assign IP from event
-        showConfirmation = true;
-        dialogRef.showModal(); // Ensure the dialog opens
+        if (dialogRef.open) {
+            event.stopImmediatePropagation();
+            ipToConfirm = event.detail; // Assign IP from event
+            showConfirmation = true;
+            dialogRef.showModal(); // Ensure the dialog opens
+        }
     }
 
     function enableCooperationButton() {
-        shouldUpdate = false;
-        visibleButton = 'original';
-        localStorage.setItem('cooperation', 'false');
+        if (shouldUpdate) {
+            shouldUpdate = false;
+            visibleButton = 'original';
+            localStorage.setItem('cooperation', 'false');
+
+            const msg = {
+                sender_ip: "localhost",
+                type: 11,
+                data: "NULL"
+            };
+            const serialized_msg = serializeMsg(msg);
+
+            fetch(redbean_url, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                    "text": serialized_msg
+                }
+            });
+        }
     }
 
     function disableCooperationButton() {
@@ -239,6 +257,7 @@
             });
 
             latestEditor = currentEditor;
+
         }
     }
 
@@ -283,6 +302,12 @@
     }
 
     window.addEventListener("receivedChangeset", handleReceivedChangeset);
+
+    function handleStopCooperation() {
+        enableCooperationButton();
+    }
+
+    window.addEventListener("stopCooperation", handleStopCooperation);
 </script>
 
 <main>
@@ -336,7 +361,7 @@ wants to connect to you</p>
                 <p id="local_ip">{localIP}</p>
                 <div class="input-container">
                     <textarea bind:value={$text} placeholder="Enter IP"></textarea>
-                    <button on:click={sendPing}>PING</button>
+                    <button on:click={sendPing}>CONNECT</button>
                 </div>
             {/if}
         </div>

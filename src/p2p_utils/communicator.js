@@ -20,16 +20,19 @@ var local_ip = "";
 // REQUEST_CODE = 8;
 // INITIALIZE_CODE = 9;
 // SEND_CHANGESET = 10;
+// TERMINATE_COOPERATION = 11;
 
 // Utilities to transform a MSG JSON into a string and viceversa 
 export function serializeMsg(msg) {
-    // Ensure the object contains the necessary fields
     if (!msg.sender_ip || !msg.type || !msg.data) {
         throw new Error("Invalid message structure");
     }
-
-    // Serialize as a delimited string
-    return `${msg.sender_ip}|${msg.type}|${msg.data}`;
+    // Encode the data to handle newlines and special characters
+    const encodedData = typeof msg.data === 'string' 
+        ? encodeURIComponent(msg.data)
+        : encodeURIComponent(JSON.stringify(msg.data));
+    
+    return `${msg.sender_ip}|${msg.type}|${encodedData}`;
 }
 
 export function serializeChangesetMsg(msg) {
@@ -47,23 +50,13 @@ export function serializeChangesetMsg(msg) {
 }
 
 export function deserializeMsg(str) {
-    // Split the string by the delimiter
     const parts = str.split("|");
     if (parts.length !== 3) {
         throw new Error("Invalid serialized message format");
     }
 
-    const type = parseInt(parts[1], 10); // Convert type to an integer
-    let data = parts[2];
-
-    // If type is 10, parse the data into the expected JSON format
-    if (type === 10) {
-        const [oldLen, newLen, ...modifications] = data.split(",").map(item => {
-            return item.startsWith('"') ? JSON.parse(item) : parseInt(item, 10);
-        });
-
-        data = { oldLen, newLen, modifications };
-    }
+    const type = parseInt(parts[1], 10);
+    let data = decodeURIComponent(parts[2]);
 
     return {
         sender_ip: parts[0],
@@ -117,6 +110,9 @@ eventSource.onmessage = (event) => {
         } else if (message.type == 10) {
             // Tell to update with the received changeset
             window.dispatchEvent(new CustomEvent("receivedChangeset", { detail: message.data }));
+        } else if (message.type == 11) {
+            // Tell to stop cooperation
+            window.dispatchEvent(new CustomEvent("stopCooperation"));
         }
     } catch (error) {
         console.error('Failed to deserialize message:', error);
