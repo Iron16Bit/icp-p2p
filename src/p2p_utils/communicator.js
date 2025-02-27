@@ -108,8 +108,20 @@ eventSource.onmessage = (event) => {
             // Tell to initialize the editor with the received code
             window.dispatchEvent(new CustomEvent("initializeCode", { detail: message.data }));
         } else if (message.type == 10) {
+            const parts = message.data.split(',');
+            let changeset = {
+                oldLen: parseInt(parts[0]),
+                newLen: parseInt(parts[1]),
+                modifications: parts.slice(2).map(item => {
+                    try {
+                        return JSON.parse(item);
+                    } catch {
+                        return parseInt(item);
+                    }
+                })
+            }
             // Tell to update with the received changeset
-            window.dispatchEvent(new CustomEvent("receivedChangeset", { detail: message.data }));
+            window.dispatchEvent(new CustomEvent("receivedChangeset", { detail: changeset }));
         } else if (message.type == 11) {
             // Tell to stop cooperation
             window.dispatchEvent(new CustomEvent("stopCooperation"));

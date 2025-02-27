@@ -69,7 +69,11 @@ export function computeChangeset(oldText, newText) {
 export function applyChangeset(text, changeset) {
     let result = "";
 
-    for (const mod of changeset.modifications) {
+    if (changeset.newLen == 0) {
+        return result;
+    }
+
+    for (const mod of changeset["modifications"]) {
         if (typeof mod === "number") {
             result += text[mod];
         } else if (typeof mod === "string") {

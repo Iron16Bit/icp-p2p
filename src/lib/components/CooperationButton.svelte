@@ -195,7 +195,7 @@
     function handleRequestCode(event) {
         event.stopImmediatePropagation();
 
-        latestEditor = editor.state.doc.toString();
+        latestEditor = editor?.state?.doc?.toString() || "";
 
         // Change msg for waiting for Editor content
         const msg = {
@@ -233,7 +233,7 @@
 
     // When the cooperation has started, we want to take the changes we have made in the editor every 100ms
     function updateEditor() {
-        let currentEditor = editor.state.doc.toString();
+        let currentEditor = editor?.state?.doc?.toString() || "";;
 
         if (currentEditor != latestEditor) {
             let changeset = computeChangeset(latestEditor, currentEditor);
@@ -276,7 +276,7 @@
 
         let receivedChangeset = event.detail;
 
-        let currentEditor = editor.state.doc.toString();
+        let currentEditor = editor?.state?.doc?.toString() || "";;
         // Store the current focus in the editor
         let selection = editor.state.selection.ranges[0].from;
 
