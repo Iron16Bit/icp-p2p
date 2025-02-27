@@ -6,7 +6,6 @@
     import { computeChangeset, applyChangeset, getCursorPosition } from "../../p2p_utils/changesets.js";
     import { tick } from "svelte";
     import type { EditorView } from "@codemirror/view";
-    import { EditorSelection, EditorState } from "@codemirror/state";
 
     /**
    * PROPS
@@ -38,10 +37,10 @@
         if (cooperation === 'false') {
             localIP = `Your IP: ${get_local_ip()}`;
 
-            if (!dialogRef.open) { // Prevent reopening if already open
+            if (!dialogRef.open) {
                 showConfirmation = false;
                 ipToConfirm = null;
-                await tick(); // Ensure state updates before opening
+                await tick();
                 dialogRef.showModal();
             }
         } else {
@@ -56,10 +55,11 @@
     };
 
     function sendPing() {
-        let ip = $text.trim(); // Trim spaces
-        ip = ip.replace(/\r/g, ""); // Remove carriage return if present
+        // Cleaning needed when sending data to C (redbean)
+        let ip = $text.trim(); 
+        ip = ip.replace(/\r/g, ""); 
 
-        // Validate IPv4 format (optional but recommended)
+        // Validate IPv4 format
         const ipv4Regex = new RegExp(
             "^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\." +
             "(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\." +
@@ -91,9 +91,9 @@
     function handleConfirmCooperation(event) {
         if (dialogRef.open) {
             event.stopImmediatePropagation();
-            ipToConfirm = event.detail; // Assign IP from event
+            ipToConfirm = event.detail;
             showConfirmation = true;
-            dialogRef.showModal(); // Ensure the dialog opens
+            dialogRef.showModal();
         }
     }
 
@@ -130,11 +130,9 @@
         // Change cooperation button icon and what it does
         disableCooperationButton();
 
-        // Fix ip format
-        let ip = ipToConfirm.trim(); // Trim spaces
-        ip = ip.replace(/\r/g, ""); // Remove carriage return if present
+        let ip = ipToConfirm.trim();
+        ip = ip.replace(/\r/g, ""); 
 
-        // Send confirmation
         const msg = {
             sender_ip: "localhost",
             type: 4,
@@ -240,7 +238,7 @@
         if (currentEditor != latestEditor) {
             let changeset = computeChangeset(latestEditor, currentEditor);
 
-            // Change msg for waiting for Editor content
+            // Change msg to waiting for Editor content
             const msg = {
                 sender_ip: "localhost",
                 type: 10,
@@ -271,6 +269,9 @@
     }
 
     function handleReceivedChangeset(event) {
+        // Algorithm based on etherpad-lite https://etherpad.org/
+        // At the moment it is an under-implementation that only works when no peer writes at the same time
+
         event.stopImmediatePropagation();
 
         let receivedChangeset = event.detail;
