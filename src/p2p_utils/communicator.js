@@ -1,6 +1,22 @@
 // Establish a connection to the SSE server
 // The redbean sends MSGs to the browser client from here
-export const eventSource = new EventSource('http://localhost:3000');
+const event_server_url = "http://localhost:";
+let event_server_port = 3000;
+
+let eventSource;
+eventSource = new EventSource('http://localhost:'+event_server_port);
+eventSource.addEventListener('error', (error) => {
+    if (eventSource.readyState === EventSource.CLOSED) {
+        // User has modified the port. Send event to browser client to ask for the new port
+        window.dispatchEvent(new CustomEvent("requestPORT"));
+        console.error('Failed to connect to event source:', error);
+    }
+});
+
+export function connectEventSource(port) {
+    eventSource = new EventSource('http://localhost:'+port);
+    window.dispatchEvent(new CustomEvent("connectionSuccess"));
+}
 
 // Local URL of the redbean HTTP server
 // The browser client can send MSGs to the redbean from here
