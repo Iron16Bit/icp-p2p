@@ -2,7 +2,7 @@
 
 <script lang='ts'>
     import { writable } from "svelte/store";
-    import { serializeMsg, redbean_url, get_local_ip, serializeChangesetMsg, connectEventSource } from "../../p2p_utils/communicator.js";
+    import { serializeMsg, redbean_url, get_local_ip, serializeChangesetMsg } from "../../p2p_utils/communicator.js";
     import { computeChangeset, applyChangeset, getCursorPosition } from "../../p2p_utils/changesets.js";
     import { tick } from "svelte";
     import type { EditorView } from "@codemirror/view";
@@ -21,7 +21,6 @@
 
     let ipToConfirm = null;
     let showConfirmation = false;
-    let connectionError = false;
 
     let visibleButton = 'original';
 
@@ -311,25 +310,6 @@
     }
 
     window.addEventListener("stopCooperation", handleStopCooperation);
-
-    function handleRequestPort(event) {
-        event.stopImmediatePropagation();
-        connectionError = true;
-    }
-
-    window.addEventListener("requestPORT", handleRequestPort);
-
-    function sendPort() {
-        let port = $text;
-        connectEventSource(port);
-    }
-
-    function handleConnectionSuccess(event) {
-        event.stopImmediatePropagation();
-        connectionError = false;
-    }
-
-    window.addEventListener("connectionSuccess", handleConnectionSuccess);
 </script>
 
 <main>
@@ -380,19 +360,11 @@ wants to connect to you</p>
                     <button on:click={rejectCooperation}>No</button>
                 </div>
             {:else}
-                {#if !connectionError}
-                    <p id="local_ip">{localIP}</p>
-                    <div class="input-container">
-                        <textarea bind:value={$text} placeholder="Enter IP"></textarea>
-                        <button on:click={sendPing}>CONNECT</button>
-                    </div>
-                {:else}
-                    <p style="text-align: center;">ENTER NEW PORT</p>
-                    <div class="input-container">
-                        <textarea bind:value={$text} placeholder="Enter port"></textarea>
-                        <button on:click={sendPort}>CONNECT</button>
-                    </div>
-                {/if}
+                <p id="local_ip">{localIP}</p>
+                <div class="input-container">
+                    <textarea bind:value={$text} placeholder="Enter IP"></textarea>
+                    <button on:click={sendPing}>CONNECT</button>
+                </div>
             {/if}
         </div>
     </dialog>
