@@ -2,7 +2,7 @@
 
 <script lang='ts'>
     import { writable } from "svelte/store";
-    import { serializeMsg, redbean_url, get_local_ip, serializeChangesetMsg } from "../../p2p_utils/communicator.js";
+    import { serializeMsg, redbean_url, get_local_ip, get_local_port, serializeChangesetMsg } from "../../p2p_utils/communicator.js";
     import { computeChangeset, applyChangeset, getCursorPosition } from "../../p2p_utils/changesets.js";
     import { tick } from "svelte";
     import type { EditorView } from "@codemirror/view";
@@ -35,7 +35,7 @@
     const showPopup = async () => {
         let cooperation = localStorage.getItem('cooperation');
         if (cooperation === 'false') {
-            localIP = `Your IP: ${get_local_ip()}`;
+            localIP = `Your IP: ${get_local_ip()}:${get_local_port()}`;
 
             if (!dialogRef.open) {
                 showConfirmation = false;
@@ -59,6 +59,9 @@
         let ip = $text.trim(); 
         ip = ip.replace(/\r/g, ""); 
 
+        let split_ip = ip.split(':');
+        let port_val = parseInt(split_ip[1], 10);
+
         // Validate IPv4 format
         const ipv4Regex = new RegExp(
             "^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\." +
@@ -67,15 +70,22 @@
             "(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$"
         );
 
-        if (!ipv4Regex.test(ip)) {
+        if (!ipv4Regex.test(split_ip[0])) {
             alert("Invalid IPv4 address.");
+            return;
+        }
+
+        // Validate port
+        if (isNaN(port_val) || port_val < 0 || port_val > 65535) {
+            alert("Invalid port.");
             return;
         }
         
         const msg = {
             sender_ip: "localhost",
+            sender_port: get_local_port(),
             type: 3,
-            data: ip
+            data: decodeURIComponent(ip)
         };
         const serialized_msg = serializeMsg(msg);
 
@@ -83,7 +93,7 @@
             method: "POST",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
-                "text": serialized_msg
+                "text": decodeURIComponent(serialized_msg)
             }
         });
     }
@@ -105,6 +115,7 @@
 
             const msg = {
                 sender_ip: "localhost",
+                sender_port: get_local_port(),
                 type: 11,
                 data: "NULL"
             };
@@ -135,8 +146,9 @@
 
         const msg = {
             sender_ip: "localhost",
+            sender_port: get_local_port(),
             type: 4,
-            data: ip
+            data: decodeURIComponent(ip)
         };
         const serialized_msg = serializeMsg(msg);
 
@@ -144,7 +156,7 @@
             method: "POST",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
-                "text": serialized_msg
+                "text": decodeURIComponent(serialized_msg)
             }
         });
 
@@ -161,7 +173,7 @@
 
     $: if (dialogRef && dialogRef.open) {
         if (!showConfirmation && !ipToConfirm) {
-            localIP = `Local IP: ${get_local_ip()}`; 
+            localIP = `Local IP: ${get_local_ip()}:${get_local_port()}`; 
         }
     }
 
@@ -174,6 +186,7 @@
         // Change msg for waiting for Editor content
         const msg = {
             sender_ip: "localhost",
+            sender_port: get_local_port(),
             type: 8,
             data: "NULL"
         };
@@ -200,6 +213,7 @@
         // Change msg for waiting for Editor content
         const msg = {
             sender_ip: "localhost",
+            sender_port: get_local_port(),
             type: 9,
             data: latestEditor
         };
@@ -241,6 +255,7 @@
             // Change msg to waiting for Editor content
             const msg = {
                 sender_ip: "localhost",
+                sender_port: get_local_port(),
                 type: 10,
                 data: changeset
             };

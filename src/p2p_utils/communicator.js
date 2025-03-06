@@ -17,6 +17,7 @@ redbean+=port;
 export const redbean_url = redbean;
 
 var local_ip = "";
+var local_port = 0;
 
 // "Enum" with the various msg types
 // INTERNAL_PING = 0; 
@@ -34,20 +35,18 @@ var local_ip = "";
 
 // Utilities to transform a MSG JSON into a string and viceversa 
 export function serializeMsg(msg) {
-    if (!msg.sender_ip || !msg.type || !msg.data) {
+    if (!msg.sender_ip || msg.sender_port === undefined || !msg.type || msg.data === undefined) {
         throw new Error("Invalid message structure");
     }
-    // Encode the data to handle newlines and special characters
-    const encodedData = typeof msg.data === 'string' 
-        ? encodeURIComponent(msg.data)
-        : encodeURIComponent(JSON.stringify(msg.data));
+    // Encode the data to handle newlines and special characters, ensuring non-empty data
+    const encodedData = msg.data ? encodeURIComponent(msg.data) : " ";
     
-    return `${msg.sender_ip}|${msg.type}|${encodedData}`;
+    return `${msg.sender_ip}|${msg.sender_port}|${msg.type}|${encodedData}`;
 }
 
 export function serializeChangesetMsg(msg) {
     // Ensure the object contains the necessary fields
-    if (!msg.sender_ip || !msg.type || !msg.data || !Array.isArray(msg.data.modifications)) {
+    if (!msg.sender_ip || msg.sender_port === undefined || !msg.type || !msg.data || !Array.isArray(msg.data.modifications)) {
         throw new Error("Invalid message structure");
     }
 
@@ -56,20 +55,19 @@ export function serializeChangesetMsg(msg) {
         msg.data.modifications.map(mod => (typeof mod === "number" ? mod : JSON.stringify(mod))).join(",");
 
     // Serialize as a delimited string
-    return `${msg.sender_ip}|${msg.type}|${serializedData}`;
+    return `${msg.sender_ip}|${msg.sender_port}|${msg.type}|${serializedData}`;
 }
 
 export function deserializeMsg(str) {
     const parts = str.split("|");
-    if (parts.length !== 3) {
-        throw new Error("Invalid serialized message format");
-    }
 
-    const type = parseInt(parts[1], 10);
-    let data = decodeURIComponent(parts[2]);
+    const sender_port = parseInt(parts[1], 10);
+    const type = parseInt(parts[2], 10);
+    let data = decodeURIComponent(parts[3]);
 
     return {
         sender_ip: parts[0],
+        sender_port,
         type,
         data,
     };
@@ -88,6 +86,7 @@ eventSource.onmessage = (event) => {
         if (message.type == 0) {
             const PONG = {
                 sender_ip: "localhost",
+                sender_port: local_port,
                 type: 1,
                 data: "NULL"
             };
@@ -105,6 +104,8 @@ eventSource.onmessage = (event) => {
             let ip = message.data.trim(); // Trim spaces
             ip = ip.replace(/\r/g, ""); // Remove carriage return if present
             local_ip = ip;
+            let port = message.sender_port;
+            local_port = port;
         } else if (message.type == 5) {
             // A peer wants to connect to us, ask for confirmation
             window.dispatchEvent(new CustomEvent("confirmCooperation", { detail: message.data }));
@@ -145,6 +146,10 @@ export function get_local_ip() {
     return local_ip;
 }
 
+export function get_local_port() {
+    return local_port;
+}
+
 // Triggered when the connection is opened
 eventSource.onopen = () => {
     console.log('Connection to SSE server opened.');
@@ -158,6 +163,7 @@ eventSource.onerror = (error) => {
 window.addEventListener("beforeunload", async function (event) {
     const msg = {
         sender_ip: "localhost",
+        sender_port: local_port,
         type: 6,
         data: "NULL"
     };
