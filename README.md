@@ -10,7 +10,12 @@ WIP project. It uses a [patched redbean](https://github.com/Iron16Bit/ICP_redbea
     ``` npm run build -- --language full ```
 3. Launch the redbean:
     ``` ./dist/base/redbean.com ```
-4. Open the ICP slides on the browser at [127.0.0.1:8080](127.0.0.1:8080)
+4. Open the ICP slides on the browser at the displayed address. Default is [http://127.0.0.1:8080/?port=3000](http://127.0.0.1:8080/?port=3000)
+
+Ports used by the redbean can be personalized using:
+- ``` -p #### ``` : open redbean HTTP server on port #### [default 8080]
+- ``` -event #### ``` : open event server on port #### [default 3000]
+- ``` -socket #### ``` : open socket server on port #### [default 3030]
 
 ## Remarks
 
